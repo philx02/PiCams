@@ -1,0 +1,1 @@
+raspivid -pf baseline -ih -t 0 -w 800 -h 600 -fps 15 -o - | python3 redirect.py 100000 spoluck.ca 5000

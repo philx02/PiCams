@@ -102,6 +102,7 @@ class CameraDispatcher(asyncio.Protocol):
     
     def handle_stream_retransmit(self):
         while True:
+            streamming_connection_alive = False
             try:
                 tcp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 # Establish connection to TCP server and exchange data
