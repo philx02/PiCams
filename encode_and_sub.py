@@ -33,6 +33,7 @@ Timer: 100.0000
 Style: Default,Consolas,20,65535,65535,65535,-2147483640,-1,0,1,3,0,2,30,30,30,0,0
 
 [Events]
+Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 
     def hms(time_delta):
@@ -44,7 +45,8 @@ Style: Default,Consolas,20,65535,65535,65535,-2147483640,-1,0,1,3,0,2,30,30,30,0
     parent_path = Path(path).parent.parent
     filename = os.path.splitext(ntpath.basename(path))[0]
     cam_name = file_info[2] + ' ' * (87 - len(file_info[2]))
-    with open(parent_path / (filename + ".ass"), 'w') as assfile:
+    assfile_path = parent_path / (filename + ".ass")
+    with open(assfile_path, 'w') as assfile:
         assfile.write(header)
         for i in range(0, video_duration):
             begin = hms(timedelta(0, i))
@@ -52,11 +54,15 @@ Style: Default,Consolas,20,65535,65535,65535,-2147483640,-1,0,1,3,0,2,30,30,30,0
             line = "Dialogue: Marked=0," + begin + "," + end + ",*Default,1,0000,0000,0000,," + cam_name
             assfile.write(line + (initial_time + timedelta(0, i)).strftime('%Y-%m-%d %H:%M:%S') + "\n")
     
-    mkv = parent_path / (filename + ".mkv")
-    if os.path.isfile(mkv):
-        os.remove(mkv)
-    os.system("ffmpeg -y -framerate 15 -i " + path + " -c:v libx265 -preset ultrafast " + str(mkv))
-
+    mkv_path = parent_path / (filename + ".mkv")
+    if os.path.isfile(mkv_path):
+        os.remove(mkv_path)
+    mkv_path_tmp = parent_path / (filename + ".tmp.mkv")
+    os.system("ffmpeg -y -framerate 15 -i " + path + " -c:v libx265 -preset ultrafast " + str(mkv_path_tmp))
+    os.system("mkvmerge -o " + str(mkv_path) + " " + str(mkv_path_tmp) + " " + str(assfile_path))
+    
+    os.remove(str(mkv_path_tmp))
+    os.remove(str(assfile_path))
     os.remove(path)
     os.remove(txt_file)
 
