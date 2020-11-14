@@ -54,7 +54,7 @@ Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             line = "Dialogue: Marked=0," + begin + "," + end + ",*Default,1,0000,0000,0000,," + cam_name
             assfile.write(line + (initial_time + timedelta(0, i)).strftime('%Y-%m-%d %H:%M:%S') + "\n")
     
-    mkv_path = parent_path / (filename + ".mkv")
+    mkv_path = parent_path / (initial_time.strftime("%Y-%m-%d-%H-%M-%S") + ".mkv")
     if os.path.isfile(mkv_path):
         os.remove(mkv_path)
     mkv_path_tmp = parent_path / (filename + ".tmp.mkv")
