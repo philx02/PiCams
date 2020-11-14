@@ -23,7 +23,7 @@ def setup_custom_logger(name):
     return logger
 
 LOGGER = setup_custom_logger("proxy")
-camera_map = {"192.168.2.66": {"name": "ParkingCam", "streamer_port": 4900}, "192.168.2.52": {"name": "PorchCam", "streamer_port": 4901}, "192.168.2.18": {"name": "ShedCam", "streamer_port": 4902}}
+camera_map = {"parkingcam": {"name": "ParkingCam", "streamer_port": 4900}, "porchcam": {"name": "PorchCam", "streamer_port": 4901}, "shedcam": {"name": "ShedCam", "streamer_port": 4902}}
 
 class CameraDispatcher(asyncio.Protocol):
     def __init__(self, loop):
@@ -36,8 +36,15 @@ class CameraDispatcher(asyncio.Protocol):
     def connection_made(self, transport):
         self.transport = transport
         self.peer = ipaddress.IPv4Address(self.transport.get_extra_info('peername')[0])
-        self.camera_name = camera_map[str(self.peer)]["name"]
-        self.streamer_port = camera_map[str(self.peer)]["streamer_port"]
+        try:
+            hostname = socket.gethostbyaddr(str(self.peer))[0]
+            campera_map_entry = camera_map[hostname]
+        except:
+            LOGGER.info("Unknown host tried to connect: " + str(self.peer))
+            self.transport.close()
+            return
+        self.camera_name = campera_map_entry["name"]
+        self.streamer_port = campera_map_entry["streamer_port"]
         LOGGER.info("Connection from: " + self.camera_name + " (" + str(self.peer) + ")")
         self.sequence_id = -1
         self.video_file_name = "/dev/null"
