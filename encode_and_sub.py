@@ -58,7 +58,7 @@ Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if os.path.isfile(mkv_path):
         os.remove(mkv_path)
     mkv_path_tmp = parent_path / (filename + ".tmp.mkv")
-    os.system("ffmpeg -y -framerate 15 -i " + path + " -c:v libx265 -preset ultrafast " + str(mkv_path_tmp))
+    os.system("ffmpeg -y -i " + path + " -c:v libx265 -preset fast " + str(mkv_path_tmp))
     os.system("mkvmerge -o " + str(mkv_path) + " " + str(mkv_path_tmp) + " " + str(assfile_path))
     
     os.remove(str(mkv_path_tmp))
