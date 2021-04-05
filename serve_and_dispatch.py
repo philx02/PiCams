@@ -23,7 +23,7 @@ def setup_custom_logger(name):
     return logger
 
 LOGGER = setup_custom_logger("proxy")
-camera_map = {"parkingcam": {"name": "ParkingCam", "streamer_port": 4900}, "porchcam": {"name": "PorchCam", "streamer_port": 4901}, "shedcam": {"name": "ShedCam", "streamer_port": 4902}, "backyardcam": {"name": "BackyardCam", "streamer_port": 4903}}
+camera_map = {"parkingcam.lan": {"name": "ParkingCam", "streamer_port": 4900}, "porchcam.lan": {"name": "PorchCam", "streamer_port": 4901}, "shedcam.lan": {"name": "ShedCam", "streamer_port": 4902}, "backyardcam.lan": {"name": "BackyardCam", "streamer_port": 4903}}
 
 class CameraDispatcher(asyncio.Protocol):
     def __init__(self, loop):
